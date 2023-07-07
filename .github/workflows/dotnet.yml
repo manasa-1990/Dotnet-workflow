@@ -1,5 +1,11 @@
 name: .NET
 
+env:
+  AZURE_WEBAPP_NAME: my-first-app    # set this to the name of your Azure Web App
+  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
+  DOTNET_VERSION: '5' 
+ 
+
 on:
   push:
     branches: [ "main" ]
@@ -16,21 +22,17 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: ${{env.DOTNET_VERSION}}
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Publish application
-      run: dotnet publish aspnet-core-github-workflow-demo.csproj -c Release -o website
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.1.2
+    - name: dotnet publish
+      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v3
       with:
-    # Artifact name
-        name: first_artifact
-    # A file, directory or wildcard pattern that describes what to upload
-        path: /website/*
-    # The desired behavior if no files are found using the provided path.
-      
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
