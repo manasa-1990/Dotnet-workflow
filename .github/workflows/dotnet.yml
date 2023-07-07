@@ -24,5 +24,5 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish application
-      run: dotnet publish aspnet-core-github-workflow-demo/aspnet-core-github-workflow-demo.csproj -c Release -o website
+      run: dotnet publish aspnet-core-github-workflow-demo.csproj -c Release -o website
       
