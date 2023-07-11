@@ -37,7 +37,9 @@ jobs:
       with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
-deploy_dev:
+  deploy:
+    permissions:
+      contents: none
     runs-on: ubuntu-latest
     needs: build
     environment:
@@ -58,5 +60,3 @@ deploy_dev:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_CREDENTIALS }}
           package: ${{env.DOTNET_ROOT}}/myapp
-
-    
