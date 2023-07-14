@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>aspnet_core_github_workflow_demo_CI/CD</RootNamespace>
+    <RootNamespace>aspnet_core_github_workflow_demo_CI</RootNamespace>
   </PropertyGroup>
 
 </Project>
