@@ -4,6 +4,11 @@ on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
+  
+env:
+  AZURE_WEBAPP_NAME: AspnetDemoforhen    # set this to the name of your Azure Web App
+  AZURE_WEBAPP_PACKAGE_PATH: '.'     # set this to the path to your web app project, defaults to the repository root
+  DOTNET_VERSION: '7' 
 
 jobs:
   build:
@@ -15,7 +20,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: ${{ENV.DOTNET_VERSION}}
+        dotnet-version: ${{env.DOTNET_VERSION}}
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -23,12 +28,12 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: dotnet publish
-      run: dotnet publish -c Release -o ${{ENV.DOTNET_ROOT}}/myapp
+      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
       with:
-          name: .net-app-${{ ENV.DOTNET_VERSION }}-${{ github.run_number }}
-          path: ${{ENV.DOTNET_ROOT}}/myapp
+          name: .net-app-${{ env.DOTNET_VERSION }}-${{ github.run_number }}
+          path: ${{env.DOTNET_ROOT}}/myapp
   deploy:
     permissions:
       contents: none
@@ -42,14 +47,14 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: .net-app-${{ ENV.DOTNET_VERSION }}-${{ github.run_number }}
+          name: .net-app-${{ env.DOTNET_VERSION }}-${{ github.run_number }}
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ ENV.AZURE_WEBAPP_NAME }}
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_CREDENTIALS}}
-          package: ${{ ENV.AZURE_WEBAPP_PACKAGE_PATH }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
   deploy_stage:
     permissions:
       contents: none
@@ -63,11 +68,11 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: .net-app-${{ ENV.DOTNET_VERSION }}-${{ github.run_number }}
+          name: .net-app-${{ env.DOTNET_VERSION }}-${{ github.run_number }}
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ ENV.AZURE_WEBAPP_NAME }}
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_CREDENTIALS}}
-          package: ${{ ENV.AZURE_WEBAPP_PACKAGE_PATH }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
